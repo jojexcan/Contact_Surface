@@ -1,4 +1,4 @@
-# Contact-Based Binding Affinity Estimation Using Simplified Surface Area Decomposition
+# Contact-Based binding affinity estimation using simplified surface area decomposition
 
 Intermolecular binding affinity is a critical measure in structural biology, drug discovery, and biomolecular engineering. Among various physics-based and empirical approaches, surface area-based scoring models offer a computationally efficient and interpretable strategy. These models rely on the observation that the formation of a stable complex is associated with the burial of solvent-accessible surface area between interacting molecules.
 
