@@ -1,9 +1,5 @@
 # Contact-Based Binding Affinity Estimation Using Simplified Surface Area Decomposition
 
-This document describes a method for estimating the binding affinity between two biomolecular components (e.g., protein-protein, protein-nucleic acid, protein-lipid) based on solvent-accessible surface area (SASA) analysis. The method is implemented as a VMD (Visual Molecular Dynamics) Tcl script and is suitable for trajectory analysis in molecular dynamics (MD) simulations.
-
-## Overview
-
 Intermolecular binding affinity is a critical measure in structural biology, drug discovery, and biomolecular engineering. Among various physics-based and empirical approaches, surface area-based scoring models offer a computationally efficient and interpretable strategy. These models rely on the observation that the formation of a stable complex is associated with the burial of solvent-accessible surface area between interacting molecules.
 
 ## Theoretical Background
