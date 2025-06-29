@@ -18,7 +18,7 @@ This equation estimates the buried surface area resulting from the interaction.
 
 In this simplified model, atoms are grouped into two classes:
 
-* **Polar (P):** Atoms likely to participate in hydrogen bonding or carry formal/partial charges (e.g., N, O, S, charged side chains)
+* **Polar (P):** Atoms likely to participate in hydrogen bonding or carry formal/partial charges (e.g., N, O, S,  P, charged side chains)
 * **Nonpolar (NP):** Aliphatic and aromatic carbon atoms that are generally hydrophobic
 
 Three interaction types are considered:
