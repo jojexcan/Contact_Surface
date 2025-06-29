@@ -56,7 +56,7 @@ These values can be modified to suit a particular force field or calibrated agai
 
 ## Implementation in VMD
 
-The provided `simplified_affinity.tcl` script performs the following steps:
+The provided `contact_surface.tcl` script performs the following steps:
 
 1. Defines selections for molecules A and B.
 2. Classifies atoms in each selection into polar (P) and nonpolar (NP).
@@ -64,16 +64,6 @@ The provided `simplified_affinity.tcl` script performs the following steps:
 4. Applies the scoring function using the defined $\alpha$ coefficients.
 5. Writes the output to a tab-delimited file with per-frame data.
 
-## Output Format
-
-The script outputs a file `simplified_affinity.dat` with the following structure:
-
-```
-#Frame  TotalAffinity  PP_area  NPNP_area  PNP_area
-0       -4.25          45.2     123.4      65.0
-1       -4.10          43.5     121.1      60.8
-...
-```
 
 ## Use Cases
 
