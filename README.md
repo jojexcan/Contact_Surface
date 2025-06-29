@@ -50,7 +50,7 @@ Based on literature and empirical scoring models:
 | ---------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P\:P             | -0.015                                   | Favorable H-bonding or polar interactions ([Eisenberg & McLachlan, 1986](https://doi.org/10.1038/319199a0))                                             |
 | NP\:NP           | -0.025                                   | Hydrophobic effect, burial of apolar surfaces (\[Eisenberg & McLachlan, 1986]; [Zhang et al., 1997](https://doi.org/10.1016/S0022-2836%2897%2900108-2)) |
-| P\:NP            | -0.010                                   | Mixed interactions are less favorable and sometimes destabilizing (\[Zhang et al., 1997])                                                               |
+| P\:NP            | -0.005                                   | Mixed interactions are less favorable and sometimes destabilizing (\[Zhang et al., 1997])                                                               |
 
 These values can be modified to suit a particular force field or calibrated against experimental data.
 
