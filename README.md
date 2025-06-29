@@ -86,5 +86,3 @@ The provided `contact_surface.tcl` script performs the following steps:
 
 ---
 
-For extended models including additional atom types or more detailed decomposition (e.g., aromatic, charged, hydrogen-bonding residues), refer to the Method 3 variant of the contact affinity scoring method.
-
