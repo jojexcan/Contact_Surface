@@ -31,7 +31,7 @@ Each of these contact types is associated with an empirical weight reflecting th
 
 ### Scoring Function
 
-The total binding free energy estimate (in kcal/mol) is computed as:
+The surface binding affinity estimate (in kcal/mol) is computed as:
 
 $$
 \Delta G_{contact} = \alpha_{P:P} \cdot A_{P:P} + \alpha_{NP:NP} \cdot A_{NP:NP} + \alpha_{P:NP} \cdot A_{P:NP}
