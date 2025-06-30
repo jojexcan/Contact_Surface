@@ -97,7 +97,7 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     # Compute total contact surface
     set selAB [atomselect $mol "$selA and within 4.45 of $selB"]
     set selBA [atomselect $mol "$selB and within 4.45 of $selA"]
-    set area_Total   [contact_area $selAB $selBA $probe_radius]
+    set area_Total [contact_area $selAB $selBA $probe_radius]
     
     #Polar selection
     set selPA  [atomselect $mol "($selA) and ($def_P)"]
