@@ -8,17 +8,11 @@
 #     - polar–polar (P:P)
 #     - nonpolar–nonpolar (NP:NP)
 #     - polar–nonpolar (P:NP and NP:P)
-#
-# Output:
-#   per-frame contact surface areas decomposition and estimated surface interaction energy
-#
 # ==============================================================================================
-#
 # Author: Jorge Cantero
 # Date: 29-06-2025
 # version: 1.0
-# Contact: Jorge Cantero
-#
+# Contact: jorgec@fq.edu.uy
 # ==============================================================================================
 
 # ==============================================================================================
@@ -26,8 +20,8 @@
 # ==============================================================================================
 
 # Atom selections for molecule A and B
-set A "segname A and noh"
-set B "segname B and noh"
+set selA "chain A and noh"
+set selB "chain B and noh"
 
 # Probe radius for SASA calculation (Å)
 set probe_radius 1.4
@@ -95,10 +89,15 @@ set mol [molinfo top]
 set nframes [molinfo $mol get numframes]
 if {$stop < 0} { set stop [expr {$nframes - 1}] }
 set out [open $outfile "w"]
-puts $out "#Frame	Polar-Polar	NoPolar-NoPolar	Polar-NoPolar	ContactSurface	ContactAffinity"
+puts $out "#Frame	ContactSurface	Affinity"
 
 for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
+    
+    # Compute total contact surface
+    set selAB [atomselect $mol "$selA and within 4.45 of $selB"]
+    set selBA [atomselect $mol "$selB and within 4.45 of $selA"]
+    set area_Total   [contact_area $selAB $selBA $probe_radius]
     
     #Polar selection
     set selPA  [atomselect $mol "($selA) and ($def_P)"]
@@ -110,31 +109,31 @@ for {set i $start} {$i <= $stop} {incr i $step} {
 
     #Polar-polar interface
     #Polar A - Polar B
-    set PAPB [atomselect $mol "index [$selPA get index] and within 4.45 of index [$selPB get index]"]
-    set PBPA [atomselect $mol "index [$selPB get index] and within 4.45 of index [$selPA get index]"]
+    set PAPB [atomselect $mol "index [$selPA get index] and within 4.5 of index [$selPB get index]"]
+    set PBPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selPA get index]"]
 
     #Surface Polar - Polar interface
     set area_PP   [contact_area $PAPB $PBPA $probe_radius]
 
     #NonPolar-NonPolar interface
     #NonPolar A - NonPolar B
-    set NPA [atomselect $mol "index [$selNPA get index] and within 4.45 of index [$selNPB get index]"]
-    set NPB [atomselect $mol "index [$selNPB get index] and within 4.45 of index [$selNPA get index]"]
+    set NPA [atomselect $mol "index [$selNPA get index] and within 4.5 of index [$selNPB get index]"]
+    set NPB [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selNPA get index]"]
 
     #Surface NonPolar - NonPolar interface
     set area_NPNP [contact_area $NPA $NPB $probe_radius]
 
     #Polar-Nonpolar interface
     #Polar A - NonPolar B
-    set PANPB [atomselect $mol "index [$selPA get index] and within 4.45 of index [$selNPB get index]"]
-    set NPBPA [atomselect $mol "index [$selNPB get index] and within 4.45 of index [$selPA get index]"]
+    set PANPB [atomselect $mol "index [$selPA get index] and within 4.5 of index [$selNPB get index]"]
+    set NPBPA [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selPA get index]"]
 
     #Surface Polar A - NonPolar B
     set area_PNP1 [contact_area $PANPB $NPBPA $probe_radius]
 
     #NonPolar A - Polar B
-    set NPAPB [atomselect $mol "index [$selNPA get index] and within 4.45 of index [$selPB get index]"]
-    set PBNPA [atomselect $mol "index [$selPB get index] and within 4.45 of index [$selNPA get index]"]
+    set NPAPB [atomselect $mol "index [$selNPA get index] and within 4.5 of index [$selPB get index]"]
+    set PBNPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selNPA get index]"]
 
     #Surface NonPolar A - Polar B
     set area_PNP2 [contact_area $NPAPB $PBNPA $probe_radius]
@@ -142,13 +141,6 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     #Surface Polar - NonPolar interface
     set area_PNP  [expr {$area_PNP1 + $area_PNP2}]
     
-    # Compute total surface
-    set totalS [expr {
-    $area_PP +
-    $area_NPNP +
-    $area_PNP
-    }]
-
     # Estimate contact energy
     set totalG [expr {
         $alpha(P:P)*$area_PP +
@@ -158,10 +150,10 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     
 
     # Write data to file
-    puts $out "$i	$area_PP	$area_NPNP	$area_PNP	$totalS	$totalG"
+    puts $out "$i	$area_Total	$totalG"
 
     # Cleanup selections
-    foreach sel [list $selPA $selNPA $selPB $selNPB] {
+    foreach sel [list $selPA $selNPA $selPB $selNPB $PAPB $PBPA $NPA $NPB $PANPB $NPBPA $NPAPB $PBNPA] {
         $sel delete
     }
     progress_bar $i $nframes
