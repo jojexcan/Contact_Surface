@@ -29,10 +29,6 @@
 set A "segname A and noh"
 set B "segname B and noh"
 
-# Reduce selections around 15 Å between A and B 
-set selA "same residue as $A and within 15 of $B"
-set selB "same residue as $B and within 15 of $A"
-
 # Probe radius for SASA calculation (Å)
 set probe_radius 1.4
 
@@ -103,14 +99,47 @@ puts $out "#Frame	Polar-Polar	NoPolar-NoPolar	Polar-NoPolar	ContactSurface	Conta
 
 for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
+    
+    #Polar selection
     set selPA  [atomselect $mol "($selA) and ($def_P)"]
-    set selNPA [atomselect $mol "($selA) and ($def_NP)"]
     set selPB  [atomselect $mol "($selB) and ($def_P)"]
+
+    #NonPolar selection
+    set selNPA [atomselect $mol "($selA) and ($def_NP)"]
     set selNPB [atomselect $mol "($selB) and ($def_NP)"]
-    set area_PP   [contact_area $selPA $selPB $probe_radius]
-    set area_NPNP [contact_area $selNPA $selNPB $probe_radius]
-    set area_PNP1 [contact_area $selPA $selNPB $probe_radius]
-    set area_PNP2 [contact_area $selNPA $selPB $probe_radius]
+
+    #Polar-polar interface
+    #Polar A - Polar B
+    set PAPB [atomselect $mol "index [$selPA get index] and within 4.45 of index [$selPB get index]"]
+    set PBPA [atomselect $mol "index [$selPB get index] and within 4.45 of index [$selPA get index]"]
+
+    #Surface Polar - Polar interface
+    set area_PP   [contact_area $PAPB $PBPA $probe_radius]
+
+    #NonPolar-NonPolar interface
+    #NonPolar A - NonPolar B
+    set NPA [atomselect $mol "index [$selNPA get index] and within 4.45 of index [$selNPB get index]"]
+    set NPB [atomselect $mol "index [$selNPB get index] and within 4.45 of index [$selNPA get index]"]
+
+    #Surface NonPolar - NonPolar interface
+    set area_NPNP [contact_area $NPA $NPB $probe_radius]
+
+    #Polar-Nonpolar interface
+    #Polar A - NonPolar B
+    set PANPB [atomselect $mol "index [$selPA get index] and within 4.45 of index [$selNPB get index]"]
+    set NPBPA [atomselect $mol "index [$selNPB get index] and within 4.45 of index [$selPA get index]"]
+
+    #Surface Polar A - NonPolar B
+    set area_PNP1 [contact_area $PANPB $NPBPA $probe_radius]
+
+    #NonPolar A - Polar B
+    set NPAPB [atomselect $mol "index [$selNPA get index] and within 4.45 of index [$selPB get index]"]
+    set PBNPA [atomselect $mol "index [$selPB get index] and within 4.45 of index [$selNPA get index]"]
+
+    #Surface NonPolar A - Polar B
+    set area_PNP2 [contact_area $NPAPB $PBNPA $probe_radius]
+
+    #Surface Polar - NonPolar interface
     set area_PNP  [expr {$area_PNP1 + $area_PNP2}]
     
     # Compute total surface
