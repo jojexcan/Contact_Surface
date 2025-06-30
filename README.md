@@ -59,7 +59,7 @@ These values can be modified to suit a particular force field or calibrated agai
 The provided `contact_surface.tcl` script performs the following steps:
 
 1. Defines selections for molecules A and B.
-2. Classifies atoms in each selection into polar (P) and nonpolar (NP).
+2. Classifies atoms in each selection into polar (P) and nonpolar (NP). You can set your own classification rules.
 3. Computes surface contact areas between each interaction type per trajectory frame.
 4. Applies the scoring function using the defined $\alpha$ coefficients.
 5. Writes the output to a tab-delimited file with per-frame data.
