@@ -1,4 +1,4 @@
- # ==============================================================================================
+# ==============================================================================================
 # sirah_only_contact_surface.tcl
 # ==============================================================================================
 # Description:
@@ -74,7 +74,7 @@ set mol [molinfo top]
 set nframes [molinfo $mol get numframes]
 if {$stop < 0} { set stop [expr {$nframes - 1}] }
 set out [open $outfile "w"]
-puts $out "#Frame	ContactSurface"
+puts $out "Frame	ContactSurface"
 
 for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
