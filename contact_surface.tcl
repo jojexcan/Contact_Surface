@@ -89,14 +89,14 @@ set mol [molinfo top]
 set nframes [molinfo $mol get numframes]
 if {$stop < 0} { set stop [expr {$nframes - 1}] }
 set out [open $outfile "w"]
-puts $out "#Frame	ContactSurface	Affinity"
+puts $out "Frame	ContactSurface	Affinity"
 
 for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
     
     # Compute total contact surface
-    set selAB [atomselect $mol "$selA and within 4.45 of $selB"]
-    set selBA [atomselect $mol "$selB and within 4.45 of $selA"]
+    set selAB [atomselect $mol "$selA and within 4.5 of $selB"]
+    set selBA [atomselect $mol "$selB and within 4.5 of $selA"]
     set area_Total [contact_area $selAB $selBA $probe_radius]
     
     #Polar selection
