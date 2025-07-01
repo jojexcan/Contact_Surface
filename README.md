@@ -67,7 +67,7 @@ The provided `contact_surface.tcl` script performs the following steps:
 
 ## Use Cases
 
-* Screening protein-ligand or protein-DNA complexes for interface quality
+* Screening protein-protein, protein-ligand or protein-DNA complexes for interface quality
 * Monitoring binding/unbinding during MD trajectories
 * Estimating relative binding affinity for mutant or modified structures
 
