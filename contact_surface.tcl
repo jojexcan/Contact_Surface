@@ -39,7 +39,7 @@ array set alpha {
 }
 
 # Atom type definitions (polar and nonpolar)
-set def_P  {name "N.*" "O.*" "P.*" "S.*"}
+set def_P  {charge >= 0.2 or charge <= -0.2}
 set def_NP "not ($def_P)"
 
 # Output file
