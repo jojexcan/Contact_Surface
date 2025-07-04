@@ -80,8 +80,8 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
     
     # Compute total contact surface
-    set selAB [atomselect $mol "$selA and within 4.45 of $selB"]
-    set selBA [atomselect $mol "$selB and within 4.45 of $selA"]
+    set selAB [atomselect $mol "$selA and within 6.1 of $selB"]
+    set selBA [atomselect $mol "$selB and within 6.1 of $selA"]
     set area_Total [contact_area $selAB $selBA $probe_radius]
     
     # Write data to file
