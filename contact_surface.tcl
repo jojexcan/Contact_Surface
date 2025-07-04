@@ -39,7 +39,7 @@ array set alpha {
 }
 
 # Atom type definitions (polar and nonpolar)
-set def_P  {charge >= 0.25 or charge <= -0.25}
+set def_P  {charge >= 0.3 or charge <= -0.3}
 set def_NP "not ($def_P)"
 
 # Output file
@@ -89,7 +89,7 @@ set mol [molinfo top]
 set nframes [molinfo $mol get numframes]
 if {$stop < 0} { set stop [expr {$nframes - 1}] }
 set out [open $outfile "w"]
-puts $out "Frame	ContactSurface	Affinity"
+puts $out "Frame    Polar-Polar    NoPolar-NoPolar    Polar-NoPolar    ContactSurface    Affinity"
 
 for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
@@ -150,7 +150,7 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     
 
     # Write data to file
-    puts $out "$i	$area_Total	$totalG"
+    puts $out "$i    $area_PP    $area_NPNP    $area_PNP    $area_Total    $totalG"
 
     # Cleanup selections
     foreach sel [list $selPA $selNPA $selPB $selNPB $PAPB $PBPA $NPA $NPB $PANPB $NPBPA $NPAPB $PBNPA] {
