@@ -20,7 +20,7 @@ set selA "sirah_protein"
 set selB "sirah_nucleic"
 
 # Probe radius for SASA calculation (Å)
-set probe_radius 1.4
+set probe_radius 2.1
 
 # Frame range
 set start 0
@@ -36,17 +36,24 @@ set outfile "contact_surface.dat"
 
 # Compute SASA of a selection
 proc sasa_area {sel probe} {
-    return [measure sasa $probe $sel -points no]
+    if {[catch {set area [measure sasa $probe $sel -points no]} result]} {
+    return 0} else {
+    return $area
+    }
 }
 
 # Conctact area function
 proc contact_area {sel1 sel2 probe} {
+    if {[catch {
     set sasa1 [sasa_area $sel1 $probe]
     set sasa2 [sasa_area $sel2 $probe]
     set sel12 [atomselect [molinfo top] "index [$sel1 get index] [$sel2 get index]"]
     set sasa12 [sasa_area $sel12 $probe]
     $sel12 delete
-    return [expr {0.5 * ($sasa1 + $sasa2 - $sasa12)}]
+    set contact [expr {0.5 * ($sasa1 + $sasa2 - $sasa12)}] } return]} {
+    return 0 } else {
+    return $contact
+    }
 }
 
 # ==============================================================================================
@@ -80,9 +87,12 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
     
     # Compute total contact surface
+    if {[catch {
     set selAB [atomselect $mol "$selA and within 6.1 of $selB"]
-    set selBA [atomselect $mol "$selB and within 6.1 of $selA"]
-    set area_Total [contact_area $selAB $selBA $probe_radius]
+    set selBA [atomselect $mol "$selB and within 6.1 of $selA"]} result]} {
+    set area_Total 0 } else {
+    set area_Total [contact_area $selAB $selBA $probe_radius] 
+    }
     
     # Write data to file
     puts $out "$i	$area_Total"
