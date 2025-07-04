@@ -51,17 +51,22 @@ set outfile "contact_surface.dat"
 
 # Compute SASA of a selection
 proc sasa_area {sel probe} {
-    return [measure sasa $probe $sel -points no]
+    if {[catch { set area [measure sasa $probe $sel -points no] }  result]} {
+    return 0 } else {
+    return $area }
 }
 
 # Conctact area function
 proc contact_area {sel1 sel2 probe} {
-    set sasa1 [sasa_area $sel1 $probe]
-    set sasa2 [sasa_area $sel2 $probe]
-    set sel12 [atomselect [molinfo top] "index [$sel1 get index] [$sel2 get index]"]
-    set sasa12 [sasa_area $sel12 $probe]
-    $sel12 delete
-    return [expr {0.5 * ($sasa1 + $sasa2 - $sasa12)}]
+    if {[catch {
+        set sasa1 [sasa_area $sel1 $probe]
+        set sasa2 [sasa_area $sel2 $probe]
+        set sel12 [atomselect [molinfo top] "index [$sel1 get index] [$sel2 get index]"]
+        set sasa12 [sasa_area $sel12 $probe]
+        set contact [expr {0.5 * ($sasa1 + $sasa2 - $sasa12)}]
+        $sel12 delete} result]} {
+        return 0 } else {
+        return $contact }      
 }
 
 # ==============================================================================================
@@ -95,9 +100,13 @@ for {set i $start} {$i <= $stop} {incr i $step} {
     molinfo $mol set frame $i
     
     # Compute total contact surface
+    if {[ catch {
     set selAB [atomselect $mol "$selA and within 4.5 of $selB"]
     set selBA [atomselect $mol "$selB and within 4.5 of $selA"]
+    } result]} {
+    set area_Total 0 } else {
     set area_Total [contact_area $selAB $selBA $probe_radius]
+    }
     
     #Polar selection
     set selPA  [atomselect $mol "($selA) and ($def_P)"]
@@ -109,34 +118,42 @@ for {set i $start} {$i <= $stop} {incr i $step} {
 
     #Polar-polar interface
     #Polar A - Polar B
+    if {[catch {
     set PAPB [atomselect $mol "index [$selPA get index] and within 4.5 of index [$selPB get index]"]
-    set PBPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selPA get index]"]
-
+    set PBPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selPA get index]"]} result]} {
+    set area_PP 0 } else {
     #Surface Polar - Polar interface
-    set area_PP   [contact_area $PAPB $PBPA $probe_radius]
+    set area_PP   [contact_area $PAPB $PBPA $probe_radius] 
+    }
 
     #NonPolar-NonPolar interface
     #NonPolar A - NonPolar B
+    if {[catch {
     set NPA [atomselect $mol "index [$selNPA get index] and within 4.5 of index [$selNPB get index]"]
-    set NPB [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selNPA get index]"]
-
+    set NPB [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selNPA get index]"]} result]} {
+    set area_NPNP 0 } else {
     #Surface NonPolar - NonPolar interface
-    set area_NPNP [contact_area $NPA $NPB $probe_radius]
+    set area_NPNP [contact_area $NPA $NPB $probe_radius] 
+    }
 
     #Polar-Nonpolar interface
     #Polar A - NonPolar B
+    if {[catch {
     set PANPB [atomselect $mol "index [$selPA get index] and within 4.5 of index [$selNPB get index]"]
-    set NPBPA [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selPA get index]"]
-
+    set NPBPA [atomselect $mol "index [$selNPB get index] and within 4.5 of index [$selPA get index]"]} result]} {
+    set area_PNP1 0 } else {
     #Surface Polar A - NonPolar B
     set area_PNP1 [contact_area $PANPB $NPBPA $probe_radius]
+    }
 
     #NonPolar A - Polar B
+    if {[catch {
     set NPAPB [atomselect $mol "index [$selNPA get index] and within 4.5 of index [$selPB get index]"]
-    set PBNPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selNPA get index]"]
-
+    set PBNPA [atomselect $mol "index [$selPB get index] and within 4.5 of index [$selNPA get index]"]} result]} {
+    set area_PNP2 0 } else {
     #Surface NonPolar A - Polar B
     set area_PNP2 [contact_area $NPAPB $PBNPA $probe_radius]
+    }
 
     #Surface Polar - NonPolar interface
     set area_PNP  [expr {$area_PNP1 + $area_PNP2}]
