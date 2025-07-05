@@ -6,11 +6,13 @@
 #                 Contact Surface (A and B) = 0.5 * [SASA_A + SASA_B - SASA_AuB]
 # ==============================================================================================
 # Author: Jorge Cantero
-# Date: 30-06-2025
-# version: 1.0
+# Date: 05-07-2025
+# version: 1.1
 # Contact: jorgec@fq.edu.uy
 # ==============================================================================================
-
+#Changelog:
+# Ver1.1
+# Added "catch" function to handle errors caused by requesting index from empty atom lists.
 # ==============================================================================================
 ## User settings and configuration
 # ==============================================================================================
